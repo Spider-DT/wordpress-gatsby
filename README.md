@@ -29,7 +29,7 @@ Perfect for developers, designers, and content creators who want a fast, maintai
 ```bash
 # Clone the repository
 git clone https://github.com/tomcomtang/wordpress-gatsby.git
-cd portfolio-blog
+cd wordpress-gatsby
 
 # Install dependencies
 npm install
@@ -337,8 +337,8 @@ When using ACF, configure your custom fields to match the fallback data structur
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/tomcomtang/portfolio-blog.git
-   cd portfolio-blog
+   git clone https://github.com/tomcomtang/wordpress-gatsby.git
+   cd wordpress-gatsby
    ```
 
 2. **Install dependencies**
