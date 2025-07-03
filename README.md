@@ -2,10 +2,6 @@
 
 A modern portfolio blog built with Gatsby, featuring static site generation (SSG) with optional WordPress data integration. This project demonstrates how to build a fast, SEO-friendly blog that can work with or without WordPress.
 
-## 🌐 Live Demo
-
-**Preview the project:** [https://wordpress-gatsby.edgeone.app/](https://wordpress-gatsby.edgeone.app/)
-
 ## 🎯 Project Purpose
 
 This project serves as a **portfolio blog template** that combines the best of both worlds:
@@ -22,7 +18,7 @@ Perfect for developers, designers, and content creators who want a fast, maintai
 
 ### Deploy to EdgeOne
 
-[![Deploy to EdgeOne](https://img.shields.io/badge/Deploy%20to-EdgeOne-blue?style=for-the-badge&logo=cloudflare)](https://edgeone.ai/pages/new?template=https://github.com/tomcomtang/wordpress-gatsby&output-directory=./public&build-command=npm%20run%20build&install-command=npm%20install)
+[![Deploy to EdgeOne](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?template=https://github.com/tomcomtang/wordpress-gatsby&output-directory=./public&build-command=npm%20run%20build&install-command=npm%20install)
 
 ### Manual Deployment
 
@@ -37,6 +33,10 @@ npm install
 # Build and deploy (no environment variables required!)
 npm run build
 ```
+
+## 🌐 Live Demo
+
+**Preview the project:** [https://wordpress-gatsby.edgeone.app/](https://wordpress-gatsby.edgeone.app/)
 
 ## 🏗️ Architecture
 
