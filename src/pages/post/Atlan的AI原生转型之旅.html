@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ lang: 'en' }" :lang="lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no">
+    <title x-text="lang === 'en' ? 'AI-Native Transformation & Data Future' : 'AI原生转型与数据未来'"></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Framer Motion CDN (for potential future use or subtle effects) -->
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@11.0.20/dist/framer-motion.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-wrap: break-word; 
+            background-color: white; /* Explicitly set background to white */
+        }
+        .highlight-num { 
+            background-color: #E0F2F1; /* Light emerald */
+            color: #00796B; /* Darker emerald */
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-weight: 600; /* Slightly bolder for numbers */
+        }
+        .text-readable { max-width: 150ch; }
+        .sidebar-gradient { 
+            background: linear-gradient(135deg, #3f624b 0%, #2e4a3a 100%); 
+        }
+        .section-container { 
+            margin-bottom: 40px; 
+            padding: 20px; 
+            background: #FAFAFA; 
+            border-radius: 12px; 
+            min-height: auto; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb; /* Light gray border */
+        }
+        .chart-container { 
+            position: relative; 
+            height: 300px; 
+            margin: 20px 0; 
+        }
+        .text-chart-combo { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 2rem; 
+            align-items: start; 
+            margin: 20px 0; 
+        }
+        .flow-step {
+            background: #f0fdf4; /* Light green */
+            border: 2px solid #3f624b;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .flow-step:hover {
+            transform: translateY(-5px);
+        }
+        .flow-arrow {
+            color: #3f624b;
+            font-size: 2rem;
+            margin: 0 1rem;
+            align-self: center;
+        }
+        .info-callout { 
+            background: #EFF6FF; 
+            border-left: 4px solid #3B82F6; 
+            padding: 16px; 
+            margin: 16px 0; 
+            border-radius: 4px; 
+            color: #1e40af;
+        }
+        .warning-callout { 
+            background: #FEF3C7; 
+            border-left: 4px solid #F59E0B; 
+            padding: 16px; 
+            margin: 16px 0; 
+            border-radius: 4px; 
+            color: #92400e;
+        }
+        .success-callout { 
+            background: #ECFDF5; 
+            border-left: 4px solid #10B981; 
+            padding: 16px; 
+            margin: 16px 0; 
+            border-radius: 4px; 
+            color: #065f46;
+        }
+        .smart-art-box {
+            background: #f8fafc; /* Light slate */
+            border: 1px solid #cbd5e1; /* Slate 300 */
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .smart-art-icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 1.5rem;
+        }
+        .smart-art-icon-circle.green { background-color: #3f624b; }
+        .smart-art-icon-circle.blue { background-color: #3b82f6; }
+        .smart-art-icon-circle.purple { background-color: #8b5cf6; }
+        .smart-art-icon-circle.orange { background-color: #f97316; }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .table-custom th, .table-custom td {
+            border: 1px solid #e2e8f0; /* Slate 200 */
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .table-custom th {
+            background-color: #f1f5f9; /* Slate 100 */
+            font-weight: 600;
+            color: #334155; /* Slate 700 */
+        }
+        .table-custom tr:nth-child(even) {
+            background-color: #f8fafc; /* Slate 50 */
+        }
+        .table-custom td {
+            color: #475569; /* Slate 600 */
+        }
+        .static-card { 
+            background: white; 
+            padding: 24px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); 
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .static-card .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        .static-card .icon-wrapper.orange { background-color: #fff7ed; color: #f97316; }
+        .static-card .icon-wrapper.blue { background-color: #eff6ff; color: #3b82f6; }
+        .static-card .icon-wrapper.green { background-color: #f0fdf4; color: #16a34a; }
+        .static-card .icon-wrapper.purple { background-color: #faf5ff; color: #7e22ce; }
+
+        .timeline-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: #cbd5e1; /* Slate 300 */
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background: #3f624b;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            border: 3px solid white;
+        }
+        .timeline-content {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            width: calc(50% - 40px); /* Adjust for dot and padding */
+            position: relative;
+        }
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 40px;
+            text-align: right;
+        }
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 40px;
+            text-align: left;
+        }
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #e2e8f0;
+            right: -10px;
+        }
+        .timeline-item:nth-child(even) .timeline-content::before {
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #e2e8f0 transparent transparent;
+            left: -10px;
+        }
+        .timeline-content h4 {
+            color: #3f624b;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .timeline-content p {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        .data-comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        .data-comparison-grid .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .data-comparison-grid .card h4 {
+            color: #3f624b;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .data-comparison-grid .card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .data-comparison-grid .card ul li {
+            margin-bottom: 5px;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+        .data-comparison-grid .card ul li strong {
+            color: #334155;
+        }
+        .data-comparison-grid .card .icon {
+            color: #3f624b;
+            margin-right: 8px;
+        }
+        .data-flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .data-flow-node {
+            background: white;
+            border: 2px solid #3f624b;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #3f624b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 180px;
+        }
+        .data-flow-arrow {
+            font-size: 2rem;
+            color: #64748b; /* Slate 500 */
+        }
+        .data-flow-sub-node {
+            background: #f1f5f9; /* Slate 100 */
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: #475569;
+            margin-top: 0.5rem;
+        }
+        .data-flow-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .data-flow-group .data-flow-node {
+            border-color: #3b82f6; /* Blue */
+            color: #3b82f6;
+        }
+        .data-flow-group .data-flow-sub-node {
+            background: #dbeafe; /* Blue 100 */
+            border-color: #93c5fd; /* Blue 300 */
+            color: #1e40af; /* Blue 800 */
+        }
+        .data-flow-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 2rem;
+        }
+        .data-flow-comparison .column {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .data-flow-comparison .column h4 {
+            color: #3f624b;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .data-flow-comparison .column .item {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+        .data-flow-comparison .column .item .icon {
+            color: #3f624b;
+            font-size: 1.2rem;
+        }
+        .data-flow-comparison .column .item.old-world .icon {
+            color: #ef4444; /* Red */
+        }
+        .data-flow-comparison .column .item.new-world .icon {
+            color: #22c55e; /* Green */
+        }
+        .data-flow-comparison .column .item.old-world {
+            border-color: #fca5a5; /* Red 300 */
+        }
+        .data-flow-comparison .column .item.new-world {
+            border-color: #86efac; /* Green 300 */
+        }
+        .data-flow-comparison .column .item.old-world h5 {
+            color: #dc2626; /* Red 600 */
+        }
+        .data-flow-comparison .column .item.new-world h5 {
+            color: #16a34a; /* Green 600 */
+        }
+        .data-flow-comparison .column .item h5 {
+            font-weight: 600;
+        }
+        .data-flow-comparison .column .item p {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 sidebar-gradient text-white p-6 overflow-y-auto z-50">
+        <h2 class="text-2xl font-bold mb-4">
+            <span x-show="lang === 'en'">Navigation</span>
+            <span x-show="lang === 'zh'">导航目录</span>
+        </h2>
+        
+        <!-- Language Toggle -->
+        <button @click="lang = lang === 'en' ? 'zh' : 'en'" 
+                class="w-full mb-6 bg-white/20 hover:bg-white/30 p-3 rounded-lg transition-all text-left">
+            <i class="fas fa-language mr-2"></i>
+            <span x-show="lang === 'en'">Switch to 中文</span>
+            <span x-show="lang === 'zh'">切换到 English</span>
+        </button>
+
+        <!-- Navigation Menu -->
+        <nav class="space-y-2">
+            <a href="#ai-transformation" class="block p-3 hover:bg-white/20 rounded-lg transition-all">
+                <i class="fas fa-robot mr-2"></i>
+                <span x-show="lang === 'en'">AI-Native Transformation</span>
+                <span x-show="lang === 'zh'">AI原生转型</span>
+            </a>
+            <a href="#hiring-ai-world" class="block p-3 hover:bg-white/20 rounded-lg transition-all">
+                <i class="fas fa-users-rays mr-2"></i>
+                <span x-show="lang === 'en'">Hiring in AI World</span>
+                <span x-show="lang === 'zh'">AI时代人才招聘</span>
+            </a>
+            <a href="#data-challenges-future" class="block p-3 hover:bg-white/20 rounded-lg transition-all">
+                <i class="fas fa-database mr-2"></i>
+                <span x-show="lang === 'en'">Data Challenges & Future</span>
+                <span x-show="lang === 'zh'">数据挑战与未来</span>
+            </a>
+            <a href="#remote-management" class="block p-3 hover:bg-white/20 rounded-lg transition-all">
+                <i class="fas fa-globe mr-2"></i>
+                <span x-show="lang === 'en'">Remote Management</span>
+                <span x-show="lang === 'zh'">远程公司管理</span>
+            </a>
+            <a href="#personal-insights" class="block p-3 hover:bg-white/20 rounded-lg transition-all">
+                <i class="fas fa-lightbulb mr-2"></i>
+                <span x-show="lang === 'en'">Personal Insights</span>
+                <span x-show="lang === 'zh'">个人见解</span>
+            </a>
+        </nav>
+        
+        <div class="mt-12 pt-6 border-t border-white/30 text-sm text-center">
+            <p class="opacity-90">Generated by trylab (spark from J.A.R.V.I.S)</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Section 1: AI-Native Transformation at Atlan -->
+        <section id="ai-transformation" class="section-container">
+            <h1 class="text-4xl font-extrabold text-[#3f624b] tracking-tight mb-6">
+                <span x-show="lang === 'en'">Atlan's Journey to AI-Native Transformation</span>
+                <span x-show="lang === 'zh'">Atlan的AI原生转型之旅</span>
+            </h1>
+            
+            <div class="text-chart-combo">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        <span x-show="lang === 'en'">Defining AI-Native</span>
+                        <span x-show="lang === 'zh'">定义AI原生</span>
+                    </h2>
+                    <p class="text-gray-700 mb-4 leading-relaxed">
+                        <span x-show="lang === 'en'">Atlan embarked on a mission to become an <strong>AI-native company</strong>. This means reimagining every process from the ground up, as if building the company today in a world where AI already exists. It's about truly integrating AI, not just augmenting existing human processes.</span>
+                        <span x-show="lang === 'zh'">Atlan致力于成为一家<strong>AI原生公司</strong>。这意味着从零开始重新构想每一个流程，如同在AI已然存在的今天从头建立公司。这关乎真正整合AI，而非仅仅增强现有的人工流程。</span>
+                    </p>
+                    <div class="info-callout">
+                        <h4 class="font-semibold text-blue-800 mb-2"><i class="fas fa-info-circle mr-2"></i>
+                            <span x-show="lang === 'en'">Design Philosophy</span>
+                            <span x-show="lang === 'zh'">设计理念</span>
+                        </h4>
+                        <p class="text-blue-700 text-sm">
+                            <span x-show="lang === 'en'">Adopts an Apple-style minimalist aesthetic, using <span class="highlight-num">#3f624b</span> as the theme color, combined with a low-saturation color scheme to create a professional and tech-savvy visual experience.</span>
+                            <span x-show="lang === 'zh'">采用苹果式简洁美学，以<span class="highlight-num">#3f624b</span>为主题色，配合低饱和度配色方案，营造专业而富有科技感的视觉体验。</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">
+                        <span x-show="lang === 'en'">AI Transformation Focus Areas</span>
+                        <span x-show="lang === 'zh'">AI转型重点领域</span>
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="aiFocusChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4">
+                        <strong><span x-show="lang === 'en'">Chart Description: </span><span x-show="lang === 'zh'">图表说明：</span></strong>
+                        <span x-show="lang === 'en'">This pie chart illustrates the key focus areas of Atlan's AI transformation. <strong>Process Reimagination</strong> accounts for <span class="highlight-num">40%</span>, emphasizing fundamental changes. <strong>Tool Integration</strong> is <span class="highlight-num">30%</span>, focusing on leveraging AI tools. <strong>Cultural Shift</strong> and <strong>Performance Optimization</strong> contribute <span class="highlight-num">15%</span> each.</span>
+                        <span x-show="lang === 'zh'">本饼图展示了Atlan AI转型的重点领域。<strong>流程重构</strong>占<span class="highlight-num">40%</span>，强调根本性变革。<strong>工具整合</strong>占<span class="highlight-num">30%</span>，侧重AI工具的利用。<strong>文化转变</strong>和<strong>性能优化</strong>各占<span class="highlight-num">15%</span>。</span>
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+                <span x-show="lang === 'en'">Three Levels of AI-Native Execution</span>
+                <span x-show="lang === 'zh'">AI原生执行的三阶段</span>
+            </h2>
+            <div class="flex items-center justify-center mb-12">
+                <div class="flow-step">
+                    <div class="smart-art-icon-circle green mx-auto"><i class="fas fa-brain"></i></div>
+                    <h4 class="text-lg font-semibold text-[#3f624b] mb-2">
+                        <span x-show="lang === 'en'">Phase 1: AI Task Force</span>
+                        <span x-show="lang === 'zh'">阶段一：AI任务小组</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Ship business-first use cases to demonstrate AI's real-world impact.</span>
+                        <span x-show="lang === 'zh'">交付业务优先的AI用例，展示AI的实际影响。</span>
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right flow-arrow"></i>
+                <div class="flow-step">
+                    <div class="smart-art-icon-circle blue mx-auto"><i class="fas fa-trophy"></i></div>
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">
+                        <span x-show="lang === 'en'">Phase 2: AI Productivity Challenge</span>
+                        <span x-show="lang === 'zh'">阶段二：AI生产力挑战赛</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Foster bottom-up momentum and company-wide adoption through gamification.</span>
+                        <span x-show="lang === 'zh'">通过游戏化促进自下而上的势头和全公司范围的采纳。</span>
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right flow-arrow"></i>
+                <div class="flow-step">
+                    <div class="smart-art-icon-circle purple mx-auto"><i class="fas fa-sitemap"></i></div>
+                    <h4 class="text-lg font-semibold text-purple-700 mb-2">
+                        <span x-show="lang === 'en'">Phase 3: AI-Native Departments</span>
+                        <span x-show="lang === 'zh'">阶段三：AI原生部门</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Reimagine departmental operating charts and human-agent workflows.</span>
+                        <span x-show="lang === 'zh'">重构部门组织架构图和人机协作流程。</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-chart-combo">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        <span x-show="lang === 'en'">Core AI Capabilities & Business Impact</span>
+                        <span x-show="lang === 'zh'">核心AI能力与业务影响</span>
+                    </h2>
+                    <p class="text-gray-700 mb-4">
+                        <span x-show="lang === 'en'">AI fundamentally excels at two things: <strong>processing vast amounts of information</strong> and <strong>generating content</strong>. Atlan leverages these capabilities to transform internal processes.</span>
+                        <span x-show="lang === 'zh'">AI从根本上擅长两件事：<strong>处理海量信息</strong>和<strong>生成内容</strong>。Atlan利用这些能力来转变内部流程。</span>
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 text-sm space-y-2 mb-4">
+                        <li><span x-show="lang === 'en'"><strong>Processing:</strong> Listening to and scoring every customer call, extracting signals for product improvement and customer experience, providing coaching to team members.</span><span x-show="lang === 'zh'"><strong>信息处理：</strong> 监听并评分每一个客户电话，提取信号以改进产品和客户体验，为团队成员提供指导。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>Generation:</strong> Writing proposals (e.g., RFPs) and scaling reporting.</span><span x-show="lang === 'zh'"><strong>内容生成：</strong> 撰写提案（例如RFP）和扩展报告。</span></li>
+                    </ul>
+                    <div class="warning-callout">
+                        <h4 class="font-semibold text-orange-800 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>
+                            <span x-show="lang === 'en'">Build vs. Buy Strategy</span>
+                            <span x-show="lang === 'zh'">自建与采购策略</span>
+                        </h4>
+                        <p class="text-orange-700 text-sm">
+                            <span x-show="lang === 'en'">Atlan's strategy is more geared towards <strong>building internal agentic tools</strong> rather than buying, especially given its position in the data and AI space. The real challenge lies in integrating <strong>business context</strong> and establishing an effective <strong>operating model</strong>.</span>
+                            <span x-show="lang === 'zh'">Atlan的策略更倾向于<strong>自建内部代理工具</strong>而非采购，尤其考虑到其在数据和AI领域的定位。真正的挑战在于整合<strong>业务上下文</strong>和建立有效的<strong>运营模式</strong>。</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">
+                        <span x-show="lang === 'en'">AI Experiment Outcomes in Production</span>
+                        <span x-show="lang === 'zh'">AI实验在生产中的结果</span>
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="aiExperimentChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4">
+                        <strong><span x-show="lang === 'en'">Analysis: </span><span x-show="lang === 'zh'">分析：</span></strong>
+                        <span x-show="lang === 'en'">Only <span class="highlight-num">25%</span> of AI experiments make it to production, while <span class="highlight-num">46%</span> are abandoned. This highlights the significant gap between initial experimentation and successful deployment, often due to the difficulty of achieving <span class="highlight-num">100%</span> accuracy and integrating complex business context.</span>
+                        <span x-show="lang === 'zh'">仅有<span class="highlight-num">25%</span>的AI实验能投入生产，而<span class="highlight-num">46%</span>被放弃。这凸显了从初步实验到成功部署之间的巨大鸿沟，这通常是由于难以达到<span class="highlight-num">100%</span>的准确性并整合复杂的业务上下文所致。</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Hiring in an AI World -->
+        <section id="hiring-ai-world" class="section-container">
+            <h1 class="text-4xl font-extrabold text-[#3f624b] tracking-tight mb-6 text-center">
+                <span x-show="lang === 'en'">Hiring for Success in an AI-Native World</span>
+                <span x-show="lang === 'zh'">在AI原生世界中招聘成功人才</span>
+            </h1>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">AI-Native Talent Density as a Pillar</span>
+                <span x-show="lang === 'zh'">AI原生人才密度作为支柱</span>
+            </h2>
+            <p class="text-gray-700 mb-4">
+                <span x-show="lang === 'en'">Atlan has made <strong>being AI-native a core part of its hiring process</strong>. Candidates are expected to demonstrate their ability to work with AI tools.</span>
+                <span x-show="lang === 'zh'">Atlan已将<strong>AI原生能力作为其招聘流程的核心部分</strong>。候选人需展示其使用AI工具的能力。</span>
+            </p>
+            <div class="flex items-center justify-center mb-12">
+                <div class="flow-step">
+                    <div class="smart-art-icon-circle orange mx-auto"><i class="fas fa-file-pen"></i></div>
+                    <h4 class="text-lg font-semibold text-orange-700 mb-2">
+                        <span x-show="lang === 'en'">Rewriting Prompts</span>
+                        <span x-show="lang === 'zh'">重写招聘提示</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Real-life problem statements explicitly require AI use.</span>
+                        <span x-show="lang === 'zh'">实际问题陈述明确要求使用AI。</span>
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right flow-arrow"></i>
+                <div class="flow-step">
+                    <div class="smart-art-icon-circle green mx-auto"><i class="fas fa-laptop-code"></i></div>
+                    <h4 class="text-lg font-semibold text-[#3f624b] mb-2">
+                        <span x-show="lang === 'en'">Expect AI Collaboration</span>
+                        <span x-show="lang === 'zh'">期望AI协作</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Candidates are expected to natively use AI in their thought process.</span>
+                        <span x-show="lang === 'zh'">候选人需在思维过程中原生使用AI。</span>
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right flow-arrow"></i>
+                <div class="flow-step">
+                    <div class="smart-art-icon-circle blue mx-auto"><i class="fas fa-chalkboard-user"></i></div>
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">
+                        <span x-show="lang === 'en'">Showcase AI Work</span>
+                        <span x-show="lang === 'zh'">展示AI工作成果</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Candidates present how they worked with AI to solve problems.</span>
+                        <span x-show="lang === 'zh'">候选人展示如何与AI协作解决问题。</span>
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Evolving Skill Sets in the AI Era</span>
+                <span x-show="lang === 'zh'">AI时代演变中的技能组合</span>
+            </h2>
+            <table class="table-custom mb-8">
+                <thead>
+                    <tr>
+                        <th x-text="lang === 'en' ? 'Skill Set' : '技能组合'"></th>
+                        <th x-text="lang === 'en' ? 'Old World (Less Relevant)' : '旧世界（相关性降低）'"></th>
+                        <th x-text="lang === 'en' ? 'New World (More Relevant)' : '新世界（相关性更高）'"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span x-show="lang === 'en'">Problem Description</span><span x-show="lang === 'zh'">问题描述</span></td>
+                        <td><span x-show="lang === 'en'">Implicit</span><span x-show="lang === 'zh'">隐性</span></td>
+                        <td><span x-show="lang === 'en'"><strong>Clean Thinking</strong>, Structured</span><span x-show="lang === 'zh'"><strong>清晰思维</strong>，结构化</span></td>
+                    </tr>
+                    <tr>
+                        <td><span x-show="lang === 'en'">Context/Experience</span><span x-show="lang === 'zh'">上下文/经验</span></td>
+                        <td><span x-show="lang === 'en'">Very Important</span><span x-show="lang === 'zh'">非常重要</span></td>
+                        <td><span x-show="lang === 'en'">Diminished</span><span x-show="lang === 'zh'">降低</span></td>
+                    </tr>
+                    <tr>
+                        <td><span x-show="lang === 'en'">Knowledge Acquisition</span><span x-show="lang === 'zh'">知识获取</span></td>
+                        <td><span x-show="lang === 'en'">Requires Time</span><span x-show="lang === 'zh'">耗时</span></td>
+                        <td><span x-show="lang === 'en'">Learn <strong>Very Quickly</strong></span><span x-show="lang === 'zh'">学习<strong>非常迅速</strong></span></td>
+                    </tr>
+                    <tr>
+                        <td><span x-show="lang === 'en'">Questioning Ability</span><span x-show="lang === 'zh'">提问能力</span></td>
+                        <td><span x-show="lang === 'en'">Less Emphasized</span><span x-show="lang === 'zh'">较少强调</span></td>
+                        <td><span x-show="lang === 'en'">Ask <strong>Right Questions</strong>, Iterate</span><span x-show="lang === 'zh'">提出<strong>正确问题</strong>，迭代</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Cultural Traits & Competitive Moat</span>
+                <span x-show="lang === 'zh'">文化特质与竞争优势</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="static-card">
+                    <div class="icon-wrapper green"><i class="fas fa-seedling"></i></div>
+                    <h4 class="text-lg font-semibold text-[#3f624b] mb-2">
+                        <span x-show="lang === 'en'">Growth Mindset</span>
+                        <span x-show="lang === 'zh'">成长型思维</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Approach problems with a beginner's mindset, eager to learn and adapt with new technologies like AI.</span>
+                        <span x-show="lang === 'zh'">以初学者心态对待问题，渴望学习并适应AI等新技术。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper blue"><i class="fas fa-shield-alt"></i></div>
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">
+                        <span x-show="lang === 'en'">Security & Confidence</span>
+                        <span x-show="lang === 'zh'">安全感与自信</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Extremely secure individuals do better with AI, embracing it as a tool rather than a threat.</span>
+                        <span x-show="lang === 'zh'">极具安全感的人在使用AI时表现更佳，将其视为工具而非威胁。</span>
+                    </p>
+                </div>
+            </div>
+            <div class="success-callout">
+                <p class="text-green-700">
+                    <i class="fas fa-trophy mr-2"></i>
+                    <span x-show="lang === 'en'"><strong>Competitive Moat:</strong> AI is unlikely to take your job, but someone else who uses AI is definitely going to take your job. Being an AI-native company helps attract and retain top talent.</span>
+                    <span x-show="lang === 'zh'"><strong>竞争优势：</strong> AI不太可能取代你的工作，但使用AI的其他人肯定会取代你的工作。成为AI原生公司有助于吸引和留住顶尖人才。</span>
+                </p>
+            </div>
+            <p class="text-gray-700 mt-4 text-sm">
+                <span x-show="lang === 'en'">This transformation is expected to <strong>slow the pace of hiring</strong>, as increased productivity per human reduces the need for rapid headcount growth.</span>
+                <span x-show="lang === 'zh'">预计这一转型将<strong>减缓招聘速度</strong>，因为人均生产力的提高降低了对快速人员增长的需求。</span>
+            </p>
+        </section>
+
+        <!-- Section 3: Data World Challenges & Future -->
+        <section id="data-challenges-future" class="section-container">
+            <h1 class="text-4xl font-extrabold text-[#3f624b] tracking-tight mb-6 text-center">
+                <span x-show="lang === 'en'">Data World: Challenges, Truths & Future Trends</span>
+                <span x-show="lang === 'zh'">数据世界：挑战、真理与未来趋势</span>
+            </h1>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Evolution of Data Platforms & The Last Mile Problem</span>
+                <span x-show="lang === 'zh'">数据平台演进与最后一公里问题</span>
+            </h2>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4><span x-show="lang === 'en'">Hadoop Era</span><span x-show="lang === 'zh'">Hadoop时代</span></h4>
+                        <p><span x-show="lang === 'en'">Early 2000s: Focus on big data storage and batch processing.</span><span x-show="lang === 'zh'">2000年代初：专注于大数据存储和批处理。</span></p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4><span x-show="lang === 'en'">Cloud Data Warehouse Era</span><span x-show="lang === 'zh'">云数据仓库时代</span></h4>
+                        <p><span x-show="lang === 'en'">2010s: Shift to cloud-native, scalable data warehousing (e.g., Snowflake).</span><span x-show="lang === 'zh'">2010年代：转向云原生、可扩展的数据仓库（如Snowflake）。</span></p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4><span x-show="lang === 'en'">Cloud Data Lake Era</span><span x-show="lang === 'zh'">云数据湖时代</span></h4>
+                        <p><span x-show="lang === 'en'">Late 2010s - Present: Combining data lake flexibility with data warehouse structure.</span><span x-show="lang === 'zh'">2010年代末至今：结合数据湖的灵活性与数据仓库的结构。</span></p>
+                    </div>
+                </div>
+            </div>
+            <p class="text-gray-700 text-center mt-4">
+                <span x-show="lang === 'en'">Despite these waves of replatforming, end-users still struggle to find and trust data. The core challenge is the <strong>"last mile problem"</strong>, which is a human + technology issue.</span>
+                <span x-show="lang === 'zh'">尽管经历了这些平台重构浪潮，终端用户仍然难以找到和信任数据。核心挑战是<strong>“最后一公里问题”</strong>，这是一个涉及人与技术的问题。</span>
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Two Core Truths of Data</span>
+                <span x-show="lang === 'zh'">数据的两大核心真理</span>
+            </h2>
+            <div class="data-comparison-grid mb-8">
+                <div class="card">
+                    <h4><i class="fas fa-users mr-2 icon"></i><span x-show="lang === 'en'">Truth 1: Data is Diverse</span><span x-show="lang === 'zh'">真理一：数据是多样化的</span></h4>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <span x-show="lang === 'en'">The data ecosystem involves a highly heterogeneous mix of teams, skill sets, and tooling preferences.</span>
+                        <span x-show="lang === 'zh'">数据生态系统涉及高度异构的团队、技能组合和工具偏好。</span>
+                    </p>
+                    <div class="chart-container h-48">
+                        <canvas id="biToolUsageChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                        <span x-show="lang === 'en'"><strong>Insight:</strong> <span class="highlight-num">87%</span> of companies use two or more BI tools, reflecting the diverse needs and tooling proliferation.</span>
+                        <span x-show="lang === 'zh'"><strong>洞察：</strong> <span class="highlight-num">87%</span>的公司使用两种或更多BI工具，反映了多样化的需求和工具的激增。</span>
+                    </p>
+                </div>
+                <div class="card">
+                    <h4><i class="fas fa-sync-alt mr-2 icon"></i><span x-show="lang === 'en'">Truth 2: Data Changes Rapidly</span><span x-show="lang === 'zh'">真理二：数据变化迅速</span></h4>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <span x-show="lang === 'en'">The data landscape evolves faster than ever before, with new technologies emerging and fading quickly (e.g., vector databases).</span>
+                        <span x-show="lang === 'zh'">数据格局变化速度前所未有，新技术迅速涌现和消退（例如，向量数据库）。</span>
+                    </p>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li><span x-show="lang === 'en'"><strong>2 years ago:</strong> Vector databases were the rage.</span><span x-show="lang === 'zh'"><strong>2年前：</strong> 向量数据库风靡一时。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>3 years ago:</strong> No one talked about them.</span><span x-show="lang === 'zh'"><strong>3年前：</strong> 无人提及。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>Today:</strong> Arguably, we've stopped talking about them.</span><span x-show="lang === 'zh'"><strong>今天：</strong> 可以说，我们已不再谈论它们。</span></li>
+                    </ul>
+                    <div class="info-callout mt-4 p-3">
+                        <p class="text-xs text-blue-700">
+                            <span x-show="lang === 'en'">This rapid change leads to complexity in answering seemingly simple questions like "why is this number off?".</span>
+                            <span x-show="lang === 'zh'">这种快速变化导致回答看似简单的问题（如“为什么这个数字不对？”）变得复杂。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Context is King & Market Shift</span>
+                <span x-show="lang === 'zh'">上下文为王与市场转变</span>
+            </h2>
+            <p class="text-gray-700 mb-4">
+                <span x-show="lang === 'en'">In the AI era, <strong>context is king</strong>. AI cannot function without rich, accessible context. This has driven significant market shifts, with application layer companies acquiring metadata capabilities.</span>
+                <span x-show="lang === 'zh'">在AI时代，<strong>上下文为王</strong>。AI若无丰富、可访问的上下文便无法运作。这推动了显著的市场转变，应用层公司纷纷收购元数据能力。</span>
+            </p>
+            <div class="data-flow-diagram">
+                <div class="data-flow-node">
+                    <span x-show="lang === 'en'">AI Needs Context</span>
+                    <span x-show="lang === 'zh'">AI需要上下文</span>
+                </div>
+                <i class="fas fa-arrow-down data-flow-arrow"></i>
+                <div class="data-flow-node">
+                    <span x-show="lang === 'en'">Importance of Metadata Layer</span>
+                    <span x-show="lang === 'zh'">元数据层的重要性</span>
+                </div>
+                <i class="fas fa-arrow-down data-flow-arrow"></i>
+                <div class="data-flow-group">
+                    <div class="data-flow-node">
+                        <span x-show="lang === 'en'">Salesforce Acquires Informatica</span>
+                        <span x-show="lang === 'zh'">Salesforce收购Informatica</span>
+                        <div class="data-flow-sub-node">
+                            <span x-show="lang === 'en'">($8 Billion)</span>
+                            <span x-show="lang === 'zh'">（80亿美元）</span>
+                        </div>
+                    </div>
+                    <div class="data-flow-node">
+                        <span x-show="lang === 'en'">ServiceNow Acquires Data.world</span>
+                        <span x-show="lang === 'zh'">ServiceNow收购Data.world</span>
+                    </div>
+                </div>
+                <i class="fas fa-arrow-down data-flow-arrow"></i>
+                <div class="data-flow-node">
+                    <span x-show="lang === 'en'">Acquiring Context Capabilities</span>
+                    <span x-show="lang === 'zh'">获取上下文能力</span>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 text-center">
+                <span x-show="lang === 'en'">These acquisitions reflect a realization that to "win the agent game" and power future AI applications, companies need to own and integrate the metadata layer where business context resides.</span>
+                <span x-show="lang === 'zh'">这些收购反映了一种认识：要“赢得代理游戏”并为未来的AI应用提供动力，公司需要拥有并整合业务上下文所在的元数据层。</span>
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Future of Data: Open Table Formats (Iceberg)</span>
+                <span x-show="lang === 'zh'">数据未来：开放表格式（Iceberg）</span>
+            </h2>
+            <div class="data-flow-comparison">
+                <div class="column">
+                    <h4><span x-show="lang === 'en'">Old World: Data to Compute</span><span x-show="lang === 'zh'">旧世界：数据到计算</span></h4>
+                    <div class="item old-world">
+                        <i class="fas fa-database icon"></i>
+                        <div>
+                            <h5><span x-show="lang === 'en'">Data Movement</span><span x-show="lang === 'zh'">数据移动</span></h5>
+                            <p><span x-show="lang === 'en'">Move data to a computation layer (data warehouse/lakehouse).</span><span x-show="lang === 'zh'">将数据移动到计算层（数据仓库/数据湖仓）。</span></p>
+                        </div>
+                    </div>
+                    <div class="item old-world">
+                        <i class="fas fa-money-bill-transfer icon"></i>
+                        <div>
+                            <h5><span x-show="lang === 'en'">High Migration Costs</span><span x-show="lang === 'zh'">高迁移成本</span></h5>
+                            <p><span x-show="lang === 'en'">Significant spending on data migrations (e.g., <span class="highlight-num">40%</span> of compute cost is insert operations).</span><span x-show="lang === 'zh'">数据迁移成本高昂（例如，<span class="highlight-num">40%</span>的计算成本是插入操作）。</span></p>
+                        </div>
+                    </div>
+                    <div class="item old-world">
+                        <i class="fas fa-lock icon"></i>
+                        <div>
+                            <h5><span x-show="lang === 'en'">Vendor Lock-in</span><span x-show="lang === 'zh'">厂商锁定</span></h5>
+                            <p><span x-show="lang === 'en'">Data often tied to specific vendor tools, limiting choice.</span><span x-show="lang === 'zh'">数据常与特定厂商工具绑定，限制选择。</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h4><span x-show="lang === 'en'">New World: Compute to Data (Iceberg)</span><span x-show="lang === 'zh'">新世界：计算到数据（Iceberg）</span></h4>
+                    <div class="item new-world">
+                        <i class="fas fa-cloud-arrow-down icon"></i>
+                        <div>
+                            <h5><span x-show="lang === 'en'">Compute Movement</span><span x-show="lang === 'zh'">计算移动</span></h5>
+                            <p><span x-show="lang === 'en'">Bring any compute to your data, which stays in place.</span><span x-show="lang === 'zh'">将任何计算带到您的数据，数据保持原地不动。</span></p>
+                        </div>
+                    </div>
+                    <div class="item new-world">
+                        <i class="fas fa-dollar-sign icon"></i>
+                        <div>
+                            <h5><span x-show="lang === 'en'">Cost Efficiency</span><span x-show="lang === 'zh'">成本效益</span></h5>
+                            <p><span x-show="lang === 'en'">Minimizes storage movement and migration costs.</span><span x-show="lang === 'zh'">最大限度地减少存储移动和迁移成本。</span></p>
+                        </div>
+                    </div>
+                    <div class="item new-world">
+                        <i class="fas fa-lock-open icon"></i>
+                        <div>
+                            <h5><span x-show="lang === 'en'">Open & Interoperable</span><span x-show="lang === 'zh'">开放与互操作</span></h5>
+                            <p><span x-show="lang === 'en'">Enables multi-cloud, multi-platform strategies and rapid innovation.</span><span x-show="lang === 'zh'">实现多云、多平台策略和快速创新。</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-gray-700 mt-4 text-center">
+                <span x-show="lang === 'en'"><strong>Salesforce's Strategy:</strong> Some companies like Salesforce might choose a more closed approach (e.g., Slack data API access changes), but customer choice and rapid innovation will likely drive the industry towards open and interoperable formats.</span>
+                <span x-show="lang === 'zh'"><strong>Salesforce的策略：</strong> 像Salesforce这样的公司可能会选择更封闭的方法（例如，Slack数据API访问权限的改变），但客户选择和快速创新可能会推动行业走向开放和可互操作的格式。</span>
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Recommended Data Stack for the Future</span>
+                <span x-show="lang === 'zh'">未来推荐数据栈</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="static-card">
+                    <div class="icon-wrapper purple"><i class="fas fa-cloud"></i></div>
+                    <h4 class="text-lg font-semibold text-purple-700 mb-2">
+                        <span x-show="lang === 'en'">Multi-Cloud Platform</span>
+                        <span x-show="lang === 'zh'">多云平台</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Expect to use multiple cloud providers (GCP, AWS, Azure) for flexibility and optimization.</span>
+                        <span x-show="lang === 'zh'">期望使用多个云提供商（GCP、AWS、Azure），以实现灵活性和优化。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper orange"><i class="fas fa-briefcase"></i></div>
+                    <h4 class="text-lg font-semibold text-orange-700 mb-2">
+                        <span x-show="lang === 'en'">Multiple Business Applications</span>
+                        <span x-show="lang === 'zh'">多个业务应用</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Leverage best-of-breed applications, avoiding reliance on a single vendor.</span>
+                        <span x-show="lang === 'zh'">利用最佳应用，避免依赖单一供应商。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper green"><i class="fas fa-database"></i></div>
+                    <h4 class="text-lg font-semibold text-[#3f624b] mb-2">
+                        <span x-show="lang === 'en'">Multiple Data Platforms</span>
+                        <span x-show="lang === 'zh'">多个数据平台</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Utilize different data platforms (Snowflake, Databricks) for varied workloads.</span>
+                        <span x-show="lang === 'zh'">针对不同工作负载，利用不同的数据平台（Snowflake、Databricks）。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper blue"><i class="fas fa-sitemap"></i></div>
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">
+                        <span x-show="lang === 'en'">Centralized Context Layer</span>
+                        <span x-show="lang === 'zh'">集中式上下文层</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">An open and interoperable layer to prevent context lock-in.</span>
+                        <span x-show="lang === 'zh'">一个开放且可互操作的层，防止上下文被锁定。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper purple"><i class="fas fa-shield-alt"></i></div>
+                    <h4 class="text-lg font-semibold text-purple-700 mb-2">
+                        <span x-show="lang === 'en'">Centralized Governance Layer</span>
+                        <span x-show="lang === 'zh'">集中式治理层</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">Ensures consistent data governance across diverse tools and platforms.</span>
+                        <span x-show="lang === 'zh'">确保在不同工具和平台之间实现一致的数据治理。</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Global Remote First Company Management -->
+        <section id="remote-management" class="section-container">
+            <h1 class="text-4xl font-extrabold text-[#3f624b] tracking-tight mb-6 text-center">
+                <span x-show="lang === 'en'">Atlan's Global Remote-First Company Management</span>
+                <span x-show="lang === 'zh'">Atlan的全球远程优先公司管理</span>
+            </h1>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Remote Strategy & Optimization</span>
+                <span x-show="lang === 'zh'">远程策略与优化</span>
+            </h2>
+            <p class="text-gray-700 mb-4">
+                <span x-show="lang === 'en'">Atlan operates as a <strong>completely global remote-first company</strong>, with team members in over <span class="highlight-num">20</span> countries. The strategy focuses on optimizing different types of work for remote vs. in-person settings.</span>
+                <span x-show="lang === 'zh'">Atlan作为一家<strong>完全全球远程优先的公司</strong>运营，团队成员遍布全球<span class="highlight-num">20</span>多个国家。该策略侧重于优化不同类型的工作，以适应远程与面对面环境。</span>
+            </p>
+            <div class="text-chart-combo">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                        <span x-show="lang === 'en'">Optimization Focus:</span>
+                        <span x-show="lang === 'zh'">优化重点：</span>
+                    </h3>
+                    <ul class="list-disc list-inside text-gray-700 text-sm space-y-2">
+                        <li><span x-show="lang === 'en'"><strong>Remote Time:</strong> Optimized for productivity and execution.</span><span x-show="lang === 'zh'"><strong>远程时间：</strong> 优化用于生产力和执行。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>In-Person Time:</strong> Optimized for problem-solving and human connection.</span><span x-show="lang === 'zh'"><strong>面对面时间：</strong> 优化用于解决问题和人际连接。</span></li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mt-4">
+                        <span x-show="lang === 'en'">Most team members work from home, with a global WeWork membership for optional in-person syncs.</span>
+                        <span x-show="lang === 'zh'">大多数团队成员在家工作，并拥有全球WeWork会员资格，可选择进行面对面同步。</span>
+                    </p>
+                </div>
+                <div class="info-callout">
+                    <h4 class="font-semibold text-blue-800 mb-2"><i class="fas fa-clock mr-2"></i>
+                        <span x-show="lang === 'en'">Atlan Standard Time (AST)</span>
+                        <span x-show="lang === 'zh'">Atlan标准时间（AST）</span>
+                    </h4>
+                    <p class="text-blue-700 text-sm">
+                        <span x-show="lang === 'en'"><strong>7:00 AM to 11:00 AM Pacific Time</strong> is the designated synchronous collaboration window. All Atlanians are expected to be online during these <span class="highlight-num">4</span> hours.</span>
+                        <span x-show="lang === 'zh'"><strong>太平洋时间上午7:00至上午11:00</strong>是指定的同步协作窗口。所有Atlan员工都必须在这<span class="highlight-num">4</span>小时内在线。</span>
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <span x-show="lang === 'en'">Fostering Connection & Culture Remotely</span>
+                <span x-show="lang === 'zh'">远程培养连接与文化</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="static-card">
+                    <div class="icon-wrapper orange"><i class="fas fa-handshake"></i></div>
+                    <h4 class="text-lg font-semibold text-orange-700 mb-2">
+                        <span x-show="lang === 'en'">Intentional Human Connection</span>
+                        <span x-show="lang === 'zh'">有意识的人际连接</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">"Atlan Special Meal" ritual with specific questions (e.g., "If an alien showed up, where would you take it for a meal?").</span>
+                        <span x-show="lang === 'zh'">“Atlan特别餐”仪式，包含特定问题（例如，“如果外星人出现在你家门口，你会带它去哪里吃饭？”）。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper green"><i class="fas fa-clipboard-list"></i></div>
+                    <h4 class="text-lg font-semibold text-[#3f624b] mb-2">
+                        <span x-show="lang === 'en'">Creating Rituals & Processes</span>
+                        <span x-show="lang === 'zh'">创建仪式与流程</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">"Unblock meetings" with a structured problem-pro-solution document for cross-functional collaboration.</span>
+                        <span x-show="lang === 'zh'">“解堵会议”采用结构化的“问题-提案-解决方案”文档，促进跨职能协作。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper blue"><i class="fas fa-heart"></i></div>
+                    <h4 class="text-lg font-semibold text-blue-700 mb-2">
+                        <span x-show="lang === 'en'">Culture of Gratitude & Feedback</span>
+                        <span x-show="lang === 'zh'">感恩与反馈文化</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">"I like, I wish, I wonder" feedback sessions for individuals and the company.</span>
+                        <span x-show="lang === 'zh'">针对个人和公司的“我喜欢、我希望、我好奇”反馈环节。</span>
+                    </p>
+                </div>
+                <div class="static-card">
+                    <div class="icon-wrapper purple"><i class="fas fa-book"></i></div>
+                    <h4 class="text-lg font-semibold text-purple-700 mb-2">
+                        <span x-show="lang === 'en'">Standardizing Culture</span>
+                        <span x-show="lang === 'zh'">标准化文化</span>
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                        <span x-show="lang === 'en'">A <span class="highlight-num">75</span>-page leadership handbook defines what it means to be an Atlan leader and operationalizes values.</span>
+                        <span x-show="lang === 'zh'">一本<span class="highlight-num">75</span>页的领导力手册定义了Atlan领导者的含义，并将其价值观付诸实践。</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Personal Insights -->
+        <section id="personal-insights" class="section-container">
+            <h1 class="text-4xl font-extrabold text-[#3f624b] tracking-tight mb-6 text-center">
+                <span x-show="lang === 'en'">Personal Insights from Pulpa Sars</span>
+                <span x-show="lang === 'zh'">Pulpa Sars的个人见解</span>
+            </h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        <span x-show="lang === 'en'">The Story Behind a Unique Name</span>
+                        <span x-show="lang === 'zh'">独特名字背后的故事</span>
+                    </h2>
+                    <p class="text-gray-700 mb-4">
+                        <span x-show="lang === 'en'">Pulpa is the <strong>only one in the world</strong> with this name. His parents thought about SEO before Google existed!</span>
+                        <span x-show="lang === 'zh'">Pulpa是世界上<strong>唯一一个</strong>拥有这个名字的人。他的父母在谷歌出现之前就考虑到了SEO！</span>
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 text-sm space-y-2">
+                        <li><span x-show="lang === 'en'"><strong>Meaning:</strong> "Brave and courageous" in Sanskrit.</span><span x-show="lang === 'zh'"><strong>含义：</strong> 梵语中意为“勇敢和无畏”。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>Origin:</strong> One of the thousand names of a deity in India.</span><span x-show="lang === 'zh'"><strong>来源：</strong> 印度一位神祇的千个名字之一。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>Downside:</strong> Childhood embarrassing posts are easily discoverable online.</span><span x-show="lang === 'zh'"><strong>缺点：</strong> 童年时期令人尴尬的帖子在网上很容易被发现。</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        <span x-show="lang === 'en'">A Believed Conspiracy Theory</span>
+                        <span x-show="lang === 'zh'">一个相信的阴谋论</span>
+                    </h2>
+                    <p class="text-gray-700 mb-4">
+                        <span x-show="lang === 'en'">Pulpa believes <strong>flight upgrades have nothing to do with points</strong>, but rather with <strong>karma</strong>.</span>
+                        <span x-show="lang === 'zh'">Pulpa认为<strong>航班升舱与积分无关</strong>，而与<strong>业力</strong>有关。</span>
+                    </p>
+                    <div class="info-callout p-3">
+                        <p class="text-sm text-blue-700">
+                            <span x-show="lang === 'en'">His co-founder, who travels less, consistently gets upgrades when they travel together, while Pulpa does not. This defies logical explanation based on loyalty points.</span>
+                            <span x-show="lang === 'zh'">他的联合创始人旅行较少，但当他们一起旅行时，他总是能获得升舱，而Pulpa却不能。这超出了基于忠诚度积分的逻辑解释。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-8">
+                <span x-show="lang === 'en'">Rethinking Leadership Hiring: Beyond "Smart People"</span>
+                <span x-show="lang === 'zh'">重新思考领导力招聘：超越“聪明人”</span>
+            </h2>
+            <div class="text-chart-combo">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                        <span x-show="lang === 'en'">Conventional Wisdom:</span>
+                        <span x-show="lang === 'zh'">传统智慧：</span>
+                    </h3>
+                    <p class="text-gray-700 mb-4">
+                        <span x-show="lang === 'en'">"Hire really smart people and let them go figure it out." This often sets leaders up for failure due to a lack of context.</span>
+                        <span x-show="lang === 'zh'">“招聘非常聪明的人，然后让他们自己去解决问题。”这通常会导致领导者因缺乏上下文而失败。</span>
+                    </p>
+                    <div class="warning-callout">
+                        <p class="text-orange-700 text-sm">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <span x-show="lang === 'en'">A leader's job is to make great decisions, which requires context. New hires lack years of company context.</span>
+                            <span x-show="lang === 'zh'">领导者的职责是做出明智的决策，这需要上下文。新员工缺乏多年的公司上下文。</span>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                        <span x-show="lang === 'en'">Pulpa's Approach:</span>
+                        <span x-show="lang === 'zh'">Pulpa的方法：</span>
+                    </h3>
+                    <p class="text-gray-700 mb-4">
+                        <span x-show="lang === 'en'">Be <strong>extremely involved for the first <span class="highlight-num">3</span> to <span class="highlight-num">6</span> months</strong> of a new leader's journey.</span>
+                        <span x-show="lang === 'zh'">在新领导者入职的最初<span class="highlight-num">3</span>到<span class="highlight-num">6</span>个月内，要<strong>极度投入</strong>。</span>
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 text-sm space-y-2">
+                        <li><span x-show="lang === 'en'"><strong>Decision Review:</strong> First <span class="highlight-num">20</span> decisions are reviewed live with Pulpa.</span><span x-show="lang === 'zh'"><strong>决策审查：</strong> 前<span class="highlight-num">20</span>个决策与Pulpa进行现场审查。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>Focus:</strong> How they think, why they think that way.</span><span x-show="lang === 'zh'"><strong>重点：</strong> 他们如何思考，为何如此思考。</span></li>
+                        <li><span x-show="lang === 'en'"><strong>Goal:</strong> Prevent sub-optimal decisions by providing necessary context.</span><span x-show="lang === 'zh'"><strong>目标：</strong> 通过提供必要的上下文，防止次优决策。</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        const chartColors = {
+            themeGreen: '#3f624b',
+            slate: '#64748b',
+            sky: '#0ea5e9',
+            emerald: '#10b981',
+            violet: '#8b5cf6',
+            orange: '#f97316',
+            red: '#ef4444',
+            gray: '#94a3b8',
+            lightGreen: '#86efac',
+            lightBlue: '#93c5fd',
+            lightPurple: '#d8b4fe',
+            lightOrange: '#fdba74',
+            lightRed: '#fca5a5',
+            lightGray: '#e2e8f0'
+        };
+        
+        // Chart: AI Transformation Focus Areas
+        new Chart(document.getElementById('aiFocusChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Process Reimagination', 'Tool Integration', 'Cultural Shift', 'Performance Optimization'],
+                datasets: [{
+                    data: [40, 30, 15, 15],
+                    backgroundColor: [chartColors.themeGreen, chartColors.sky, chartColors.violet, chartColors.orange],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20 } },
+                    tooltip: {
+                        callbacks: { label: (context) => `${context.label}: ${context.parsed}%` }
+                    }
+                }
+            }
+        });
+
+        // Chart: AI Experiment Outcomes in Production
+        new Chart(document.getElementById('aiExperimentChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Made to Production', 'Abandoned', 'In Progress/Other'],
+                datasets: [{
+                    data: [25, 46, 29],
+                    backgroundColor: [chartColors.emerald, chartColors.red, chartColors.slate],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20 } },
+                    tooltip: {
+                        callbacks: { label: (context) => `${context.label}: ${context.parsed}%` }
+                    }
+                }
+            }
+        });
+
+        // Chart: BI Tool Usage (Example from transcript: 87% use 2+ BI tools)
+        new Chart(document.getElementById('biToolUsageChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Companies Using 2+ BI Tools', 'Companies Using 1 BI Tool'],
+                datasets: [{
+                    label: 'Percentage',
+                    data: [87, 13],
+                    backgroundColor: [chartColors.themeGreen, chartColors.gray],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: { label: (context) => `${context.label}: ${context.parsed.y}%` }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
